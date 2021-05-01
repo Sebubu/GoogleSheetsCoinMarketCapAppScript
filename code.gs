@@ -2,12 +2,11 @@ const COINMARKETCAP_API_KEY = "YOUR API KEY";
 const CACHE_TIME_IN_MINUTES = 15;
 
 function ccprice(name) {
-  name = name.toLowerCase();
   const cache = new CCPriceCache();
   const cachedValue = cache.getValue(name);
   if (cachedValue) {
     console.log('get value from cache');
-    return cachedValue;
+    return parseFloat(cachedValue);
   }
 
   const fetcher = new PriceFetcher(COINMARKETCAP_API_KEY, cache);
@@ -26,34 +25,62 @@ class CCPriceCache {
     this._cache = CacheService.getScriptCache();
   }
 
-  _generateCacheKey(currency) {
-    return 'ccprice_' + currency.toLowerCase();
-  }
-
   getValue(currency){
-    const key = this._generateCacheKey(currency);
-    return this._cache.get(key);
+    const data = this._readDict();
+    return data[currency.toUpperCase()];
   }
 
-  setCurrencyValue(currency, value) {
-    const key = this._generateCacheKey(currency);
-    this._cache.put(key, value, 60*this.CACHE_TIME_IN_MINUTES);
-  }
-  setCurrencyValues(currencyValueDict) {
-    const keyValueDict = {};
-    for (const symb of Object.keys(currencyValueDict)) {
-      const key = this._generateCacheKey(symb);
-      keyValueDict[key] = currencyValueDict[symb];
+  _readDict() {
+    let partIndex = 0;
+    let stopReading = false;
+    let readValues = {};
+    while (!stopReading) {
+      const key = this._partKey(partIndex);
+      const read = this._cache.get(key);
+      if (!read) {
+        break;
+      }
+      const data = JSON.parse(read);
+      readValues = Object.assign(readValues, data);
+      partIndex += 1;
     }
-    console.log(keyValueDict);
-    this._cache.putAll(keyValueDict, 60*this.CACHE_TIME_IN_MINUTES);
+    return readValues;
   }
+
+  setCurrencyValues(currencyValueDict) {
+    this._saveToCache(currencyValueDict, 200);
+  }
+
+  _partKey(index) {
+    return 'part_' + index;
+  }
+
+  _saveToCache(keyValues, maxLength) {
+    let dict = {};
+    let count = 0;
+    let partIndex = 0;
+    for (const symb of Object.keys(keyValues)) {
+      count += 1;
+      dict[symb] = keyValues[symb];
+
+      if (count === maxLength) {
+        const key = this._partKey(partIndex)
+        const data = JSON.stringify(dict)
+        this._cache.put(key, data, 60*CACHE_TIME_IN_MINUTES)
+        dict = {};
+        count = 0;
+        partIndex += 1;
+      }
+    }
+  }
+
+
   setLastUpdatedAt() {
-    const key = this._generateCacheKey('lastUpdatedAt');
+    const key = 'cc_lastUpdatedAt';
     this._cache.put(key, new Date());
   }
   get lastUpdatedAt() {
-    const key = this._generateCacheKey('lastUpdatedAt');
+    const key = 'cc_lastUpdatedAt';
     this._cache.get(key);
   }
 }
@@ -93,12 +120,12 @@ class PriceFetcher {
   }
 
   _savePricesToCache() {
-    var url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=" + this.coinmarketcapApiKey;
+    var url = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?limit=5000&CMC_PRO_API_KEY=" + this.coinmarketcapApiKey;
 
     var response = UrlFetchApp.fetch(url);
     var json = response.getContentText();
     var data = JSON.parse(json);
-
+    console.log('fetched', data['data'].length, 'currencies');
     const keyValues = {};
     for (const currency of data['data']) {
       const symb = currency['symbol'];
