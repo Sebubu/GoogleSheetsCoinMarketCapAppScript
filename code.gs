@@ -1,7 +1,7 @@
 const COINMARKETCAP_API_KEY = "YOUR API KEY";
 const CACHE_TIME_IN_MINUTES = 15;
 
-function ccprice(name) {
+function CCPRICE(name) {
   const cache = new CCPriceCache();
   const cachedValue = cache.getValue(name);
   if (cachedValue) {
