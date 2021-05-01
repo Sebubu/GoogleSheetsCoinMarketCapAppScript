@@ -1,12 +1,11 @@
 # Google sheets function for crypto currencies
 
-Fetches crypto currency prices from coinmarketcap.com. Prices in USD. 4911 currencies available.
+Fetches crypto currency prices from coinmarketcap.com. 4911 currencies available. Prices in USD.
 
 
 ### Add to your sheet
-
-1. Add the code to your App Script (Tools -> Script Editor).
-2. Get an API KEY from https://coinmarketcap.com/api/.
+1. Get an API KEY from https://coinmarketcap.com/api/.
+2. Add the code to your App Script (Tools -> Script Editor).
 3. Add your key to the script variable COINMARKETCAP_API_KEY in your sheet.
 
 
