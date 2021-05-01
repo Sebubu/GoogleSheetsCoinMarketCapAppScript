@@ -1,6 +1,6 @@
 # Google sheets function for crypto currencies
 
-Fetches crypto currency prices from CoinMarketCap.com and saves it in the Google cache to reduce api call. Prices in USD.
+Fetches crypto currency prices from coinmarketcap.com. Prices in USD. 4911 currencies available.
 
 
 ### Add to your sheet
@@ -18,5 +18,9 @@ Get a cryptocurreny price in USD. Use the following formula.
 =ccprice("BTC")
 ```
 
+### Optimizations
 
+The script is optimized to reduce API calls. 
 
+- All prices are cached for 15min. Change the cache time with the variable `CACHE_TIME_IN_MINUTES` in code.gs.
+- Multi call lock. When the script is called several times in parallel only 1 API call is made.
