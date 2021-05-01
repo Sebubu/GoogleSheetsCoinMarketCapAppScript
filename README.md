@@ -1,6 +1,6 @@
 # Google sheets function for crypto currencies
 
-Fetches crypto currency prices from coinmarketcap.com. 4911 currencies available. Prices in USD.
+Fetches crypto currency prices from coinmarketcap.com. 4911 currencies available. Prices in USD. Compared to [GOOGLEFINANCE](https://support.google.com/docs/answer/3093281?hl=en) formula, ccprice provides prices for way more currencies.
 
 
 ### Add to your sheet
@@ -14,7 +14,7 @@ Fetches crypto currency prices from coinmarketcap.com. 4911 currencies available
 Get a cryptocurreny price in USD. Use the following formula.
 
 ```
-=ccprice("BTC")
+=CCPRICE("BTC")
 ```
 
 ### Optimizations
