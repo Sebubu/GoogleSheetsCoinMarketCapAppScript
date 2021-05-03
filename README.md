@@ -5,7 +5,7 @@ Fetches crypto currency prices from coinmarketcap.com. 4911 currencies available
 
 ### Add to your sheet
 1. Get an API KEY from https://coinmarketcap.com/api/.
-2. Add the code to your App Script (Open Sheet -> Tools -> Script Editor).
+2. Add the code from [code.gs](code.gs) to your app script (Open Sheet -> Tools -> Script Editor).
 3. Add your key to the script variable `COINMARKETCAP_API_KEY` in your sheet.
 
 
@@ -21,5 +21,5 @@ Get a cryptocurreny price in USD. Use the following formula.
 
 The script is optimized to reduce API calls. 
 
-- All prices are cached for 15min. Change the cache time with the variable `CACHE_TIME_IN_MINUTES` in code.gs.
+- All prices are cached for 2 hours. Change the cache time with the variable `CACHE_TIME_IN_MINUTES` in code.gs.
 - Multi call lock. When the script is called several times in parallel only 1 API call is made.
